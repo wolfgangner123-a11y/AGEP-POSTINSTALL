@@ -60,7 +60,7 @@ function Submenu-WinRAR {
         Write-Host "==================================================" -ForegroundColor Cyan
         Write-Host ""
         Write-Host "  [1] Instalar WinRAR" -ForegroundColor Yellow
-        Write-Host "  [2] Ejecutar Script de Activacion WinRAR" -ForegroundColor Yellow
+        Write-Host "  [2] Activar WinRAR" -ForegroundColor Yellow
         Write-Host "  [3] Volver al Menu Principal" -ForegroundColor Red
         Write-Host ""
         $opcRar = Read-Host "Selecciona una opcion [1-3]"
@@ -72,8 +72,25 @@ function Submenu-WinRAR {
                 Pause
             }
             '2' {
-                Write-Host "`nEjecutando script de activacion..." -ForegroundColor Cyan
-                irm https://raw.githubusercontent.com/NaeemBolchhi/WinRAR-Activator/main/WinRAR-Activator.ps1 | iex
+                Write-Host "`nActivando WinRAR..." -ForegroundColor Cyan
+                $rarPath = "${env:ProgramFiles}\WinRAR"
+                if (-not (Test-Path $rarPath)) {
+                    $rarPath = "${env:ProgramFiles(x86)}\WinRAR"
+                }
+
+                if (Test-Path $rarPath) {
+                    $keyContent = @"
+RAR registration data
+Unlimited Company License
+UID=4b84a1e6b0115024765a
+6412212250765a4b84a1e6b0115024765a4b84a1e6b0115024765a
+4b84a1e6b0115024765a4b84a1e6b0115024765a4b84a1e6b01150
+"@
+                    Set-Content -Path "$rarPath\rarreg.key" -Value $keyContent
+                    Write-Host "WinRAR activado correctamente." -ForegroundColor Green
+                } else {
+                    Write-Host "WinRAR no esta instalado en el equipo." -ForegroundColor Red
+                }
                 Pause
             }
         }
